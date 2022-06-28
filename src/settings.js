@@ -1,7 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
-
+  title: '人力资源系统',
   /**
    * @type {boolean} true | false
    * @description Whether fix the header
@@ -12,5 +11,5 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false
+  sidebarLogo: true
 }

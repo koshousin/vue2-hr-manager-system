@@ -1,4 +1,5 @@
 <template>
+  <!-- 动态决定路由标签还是链接 -->
   <component :is="type" v-bind="linkProps(to)">
     <slot />
   </component>

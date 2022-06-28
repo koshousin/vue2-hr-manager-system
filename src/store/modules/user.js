@@ -1,97 +1,50 @@
-import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
-
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: '',
-    avatar: ''
-  }
-}
-
-const state = getDefaultState()
-
-const mutations = {
-  RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
-  },
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  }
-}
-
-const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
-  }
-}
-
+import { login,getUserProfile,getUserDetailById} from '@/api/user'; 
 export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
+  namespaced:true,
+  state: {
+    token: getToken() || null,
+    userInfo:{}
+  },
+  mutations: {
+    SET_TOKEN(state,str) {
+      state.token = str;
+      setToken(str);
+    }, 
+    SET_USER_PROFILE(state,data) {
+      state.userInfo = data;
+    },
+    REMOVE_TOKEN(state) {
+      state.token = null;
+      removeToken();
+    },
+    REMOVE_USER_PROFILE(state) {
+      state.userInfo = {}
+    }
+  },
+  actions: {
+    async userLogin({ commit }, data) {
+      try {
+        const { data: token } = await login(data);
+        console.log('token',token);
+        commit('SET_TOKEN',token);
+      } catch (error) {
+        console.log('请求登录失败：',error);
+      }
+    },
+    async getProfile({commit}) {
+      try {
+        const rs = await getUserProfile();
+        const info = await getUserDetailById(rs.data.userId);
+        commit('SET_USER_PROFILE',{...rs.data,...info.data});
+        //onsole.log(data);
+      } catch (error) {
+        console.log('获取用户信息失败');
+      }
+    },
+    userLogout({commit}) {
+       commit("REMOVE_TOKEN");
+       commit("REMOVE_USER_PROFILE");
+    }
+  }
 }
-
