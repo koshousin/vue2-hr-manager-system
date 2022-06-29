@@ -115,3 +115,24 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 将平铺数据转化为树形数据
+export function trainList2TreeData(data) {
+  const result = [];
+
+  data.forEach(item => {
+    if (!item.hasOwnProperty('children')) {
+      item.children = []
+    }
+    if (item.pid === '') {
+      result.push(item);
+    } else {
+      const target = data.find(ele => ele.id === item.pid);
+      if (target) {
+        target.children.push(item);
+      }
+    }
+  })
+
+  return result;
+}

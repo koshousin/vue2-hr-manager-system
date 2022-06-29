@@ -14,7 +14,7 @@ router.beforeEach(async (to,from,next) => {
   const token = getToken();
   if (token) { 
     if (to.path === "/login") {
-      console.log("已经登陆，请勿重复登录！");
+      //console.log("已经登陆，请勿重复登录！");
       next("/");
       NProgress.done();
     } else {
@@ -30,7 +30,7 @@ router.beforeEach(async (to,from,next) => {
       next();
     } else {
       // 存储用户登陆成功后要跳转的页面
-      console.log('未登录，转到登录页。');
+      //console.log('未登录，转到登录页。');
       next('/login');
       NProgress.done();
     }
