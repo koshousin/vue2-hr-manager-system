@@ -145,6 +145,10 @@
               }else{    // 添加
                 const params = {...this.form,pid:this.id}
                 const res = await addDepartments(params);
+                this.$message({
+                  type:'success',
+                  message:'添加成功'
+                })
                 console.log(res);
               }
               //this.form = {}
