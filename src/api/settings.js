@@ -15,6 +15,12 @@ export function getRoleById(id) {
   });
 }
 
+export function getRoleDetail(id) {
+  return request({
+    url: `/sys/role/${id}`,
+  });
+}
+
 export function deleteRole(id) {
   return request({
     url: `/sys/role/${id}`,
@@ -35,5 +41,13 @@ export function updateRole(data) {
     url: "/sys/role/" + data.id,
     method: "put",
     data
+  });
+}
+
+export function assignPerm(data) {
+  return request({
+    url: "/sys/role/assignPrem",
+    method: "put",
+    data,
   });
 }

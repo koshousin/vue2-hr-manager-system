@@ -51,7 +51,6 @@ export const constantRoutes = [
     component: () => import("@/views/404"),
     hidden: true,
   },
-
   {
     path: "/",
     component: Layout,
@@ -65,8 +64,20 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/import",
+    component: Layout,
+    hidden: true, // 不显示到左侧菜单
+    children: [
+      {
+        path: "",
+        component: () => import("@/views/import"),
+      },
+    ],
+  }, 
 ];
 
+// 根据用户生成的动态路由
 export const dynamicRoutes = [
   // 重点开发以下四个业务模块
   departmentsRouter,
@@ -84,7 +95,7 @@ const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   // 动静路由表结合
-  routes: [...constantRoutes,...dynamicRoutes]
+  routes: [...constantRoutes]
 })
 
 const router = createRouter()
@@ -92,7 +103,8 @@ const router = createRouter()
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  //console.log(newRouter.matcher,router.matcher);
+  router.matcher = newRouter.matcher; // reset router
 }
 
 export default router

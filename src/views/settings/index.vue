@@ -23,7 +23,10 @@
                 <el-table-column label="描述" prop="description" />
                 <el-table-column label="操作">
                   <template slot-scope="scope">
-                    <el-button size="small" type="success">分配权限</el-button>
+                    <el-button 
+                      @click="handleAssign(scope.row.id)"
+                      size="small" 
+                      type="success">分配权限</el-button>
                     <el-button
                       @click="handleEdit(scope.row)"
                       size="small" type="primary">编辑</el-button>
@@ -45,6 +48,7 @@
               </el-row>
             </el-tab-pane>
           </el-tabs>
+          <!-- 编辑/新增角色弹窗 -->
           <el-dialog
             :title="isEdit ? '编辑角色' : '新增角色' "
             :visible.sync="centerDialogVisible"
@@ -67,14 +71,34 @@
               <el-button size="small" @click="handleCancel">取消</el-button>
             </el-row>
           </el-dialog>
+          <!-- 分配权限弹窗 -->
+          <el-dialog 
+            :visible.sync="assignDialogShow"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            title="分配权限(一级为路由页面查看权限-二级为按钮操作权限)" 
+          >
+          <assign-permission 
+            ref="assignRef"
+            :id="curId"
+            @close="assignDialogShow = false" />
+        </el-dialog>
         </el-card>
     </div>
   </div>
 </template>
 <script>
-  import {getRoles,deleteRole,addRole,getRoleById,updateRole} from '@/api/settings'
+  import {
+    getRoles,
+    deleteRole,
+    addRole,
+    getRoleById,
+    updateRole
+  } from '@/api/settings'
+  import AssignPermission from './assignPermission.vue'
   export default {
     name:'Settings',
+    components:{AssignPermission},
     created(){
       this.loadRoles();
     },
@@ -84,8 +108,10 @@
         activeName:'first',
         startIndex:1, // 每页的起始索引值
         centerDialogVisible:false,
+        assignDialogShow:false,
         total:0,
         isEdit:false,
+        curId:'',     // 点击分配权限所在行角色的ID
         pageParams:{
           page:1,
           pagesize:2
@@ -179,6 +205,13 @@
           this.centerDialogVisible = false
           //console.log('新增角色失败');
         }
+      },
+      handleAssign(id){
+        this.curId = id;
+        this.assignDialogShow = true;
+        this.$nextTick(()=>{
+          this.$refs.assignRef.loadPermissionListById();
+        });
       },
       handleSubmit(){
         this.$refs.settingFormRef.validate(valid => {

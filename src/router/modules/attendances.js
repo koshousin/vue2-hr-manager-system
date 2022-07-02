@@ -5,7 +5,7 @@ export default {
   component: Layout,
   children: [
     {
-      path: "",
+      path: "",       // 默认路由
       name:'attendances',
       component: () => import("@/views/attendances"),
       meta: {

@@ -5,6 +5,7 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import MyPlugin from '@/components'
 
 import '@/styles/index.scss' // global css
 
@@ -30,6 +31,21 @@ import '@/permission' // permission control
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
+Vue.use(MyPlugin);
+// 注册权限点全局指令
+Vue.directive('allow', {
+  inserted: (el,binding) => {
+    const points = store.state.user.userInfo.roles.points;
+    // 如果points有binding.value则显示
+    if (points.includes(binding.value)) {
+      // console.log('判断这个元素是否会显示', el, binding.value)
+    } else {
+      // console.log(el.parentNode);
+      el.parentNode.removeChild(el);
+      // el.style.display = 'none'
+    }
+  }
+})
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 

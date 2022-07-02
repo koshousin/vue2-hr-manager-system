@@ -1,5 +1,7 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { login,getUserProfile,getUserDetailById} from '@/api/user'; 
+import { resetRouter } from "@/router";
+
 export default {
   namespaced:true,
   state: {
@@ -36,15 +38,18 @@ export default {
       try {
         const rs = await getUserProfile();
         const info = await getUserDetailById(rs.data.userId);
-        commit('SET_USER_PROFILE',{...rs.data,...info.data});
-        //onsole.log(data);
+        commit('SET_USER_PROFILE', { ...rs.data, ...info.data });
+        return rs.data.roles.menus;
       } catch (error) {
         console.log('获取用户信息失败');
       }
     },
     userLogout({commit}) {
-       commit("REMOVE_TOKEN");
-       commit("REMOVE_USER_PROFILE");
+      commit("REMOVE_TOKEN");
+      commit("REMOVE_USER_PROFILE");
+      // commit('menuList/SET_MENU_LIST',[]);
+      //重置路由
+      resetRouter();
     }
   }
 }

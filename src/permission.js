@@ -1,7 +1,8 @@
-import router from '@/router'
+import router, {dynamicRoutes} from '@/router'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import getTitle from '@/utils/get-page-title'
+// import { filter } from 'mock/user';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css'
 
@@ -20,9 +21,31 @@ router.beforeEach(async (to,from,next) => {
     } else {
       // 防止多次跳转
       if (!store.state.user.userInfo.userId) {
-        await store.dispatch("user/getProfile");
-      } 
-      next();
+        const roles = await store.dispatch("user/getProfile");
+        // 根据用户权限筛选出应有的页面
+        const filteredRoutes = dynamicRoutes.filter(route => {
+          //console.log(route);
+          const name = route.path.slice(1);
+          return roles.includes(name) 
+        })
+
+        // 添加 404 界面
+        filteredRoutes.push({ path: "*", redirect: "/404", hidden: true });
+
+        //console.log(filteredRoutes);
+        // children.name
+        // 动态路由添加
+        /* 此时已经添加进路由，但不会在页面上展示 */
+        router.addRoutes(filteredRoutes);
+        store.commit('menuList/SET_MENU_LIST', filteredRoutes);
+        // 解决白屏bug
+        next({
+          ...to,    // 保证路由添加完再进入
+          replace:true
+        })
+      } else {
+        next();
+      }
     }
   } else {
     // 如果在白名单里

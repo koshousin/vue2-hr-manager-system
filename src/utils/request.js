@@ -21,7 +21,7 @@ service.interceptors.request.use(config => {
 
 service.interceptors.response.use(res => {
     if (!res.data.success) {
-      return Promise.reject(new Error('请求错误'));
+      return Promise.reject(new Error('请求错误'+res.data.message));
     }else {
       // 简化响应回来的数据
       return res.data
