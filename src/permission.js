@@ -2,7 +2,6 @@ import router, {dynamicRoutes} from '@/router'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import getTitle from '@/utils/get-page-title'
-// import { filter } from 'mock/user';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css'
 
@@ -29,9 +28,11 @@ router.beforeEach(async (to,from,next) => {
           return roles.includes(name) 
         })
 
+        //console.log('过滤后的数组：',filteredRoutes);
+
         // 添加 404 界面
         filteredRoutes.push({ path: "*", redirect: "/404", hidden: true });
-
+  
         //console.log(filteredRoutes);
         // children.name
         // 动态路由添加

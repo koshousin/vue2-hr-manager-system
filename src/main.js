@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 import MyPlugin from '@/components'
+import i18n from '@/lang'
 
 import '@/styles/index.scss' // global css
 
@@ -55,5 +56,6 @@ new Vue({
   el: '#app',
   router,
   store,
+  i18n,
   render: h => h(App)
 })

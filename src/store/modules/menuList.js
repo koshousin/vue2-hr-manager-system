@@ -6,7 +6,11 @@ export default {
   },
   mutations: {
     SET_MENU_LIST(state,dynamicRoutes) {
-      state.menuList = [...state.menuList,...dynamicRoutes]
+      state.menuList = [...state.menuList, ...dynamicRoutes]
+      //console.log('当前菜单项',state.menuList);
+    },
+    RESET_MENU_LIST(state) {
+      state.menuList = [...constantRoutes]
     }
   }
 }

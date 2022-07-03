@@ -35,6 +35,7 @@ export default {
       'sidebar'
     ]),
     routes() {
+      //console.log(this.$store.state.menuList.menuList);
       return this.$store.state.menuList.menuList;
     },
     activeMenu() {

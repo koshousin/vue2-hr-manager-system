@@ -11,6 +11,9 @@ import { isExternal } from '@/utils/validate'
 
 export default {
   name: 'SvgIcon',
+  // created(){
+  //   console.log('svg-icon:',this.iconClass,this.$listeners);
+  // },
   props: {
     iconClass: {
       type: String,

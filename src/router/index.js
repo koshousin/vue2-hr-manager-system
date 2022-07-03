@@ -105,6 +105,7 @@ export function resetRouter() {
   const newRouter = createRouter()
   //console.log(newRouter.matcher,router.matcher);
   router.matcher = newRouter.matcher; // reset router
+  //console.log('重置后的数组：',router);
 }
 
 export default router

@@ -8,6 +8,31 @@ function resolve(dir) {
 
 const name = defaultSettings.title || 'vue Admin Template' // page title
 
+/* 生产环境外部环境的优化 */
+// 生产环境下常用大包库打包成线上
+let externals = {}
+let cdn = {
+  css: [
+    "https://unpkg.com/element-ui/lib/theme-chalk/index.css", // element-ui css 样式表
+  ],
+  // vue must at first!
+  js: [
+    "https://unpkg.com/vue@2.6.12/dist/vue.js", // vuejs
+    "https://unpkg.com/element-ui/lib/index.js", // element-ui js
+    "https://cdn.jsdelivr.net/npm/xlsx@0.16.6/dist/xlsx.full.min.js",
+  ],
+};
+const isProduction = process.env.NODE_ENV === 'production'
+
+if (isProduction) {
+  externals = {
+    'vue': "Vue",
+    "element-ui": "ELEMENT",
+    'xlsx': "XLSX",
+  };
+}
+
+
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
@@ -24,7 +49,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: "/",
+  publicPath: "./",     // 这样设置可以直接双击打开 dist/index.html
   outputDir: "dist",
   assetsDir: "static",
   lintOnSave: process.env.NODE_ENV === "production",
@@ -48,6 +73,7 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    externals,
     resolve: {
       alias: {
         "@": resolve("src"),
@@ -121,6 +147,19 @@ module.exports = {
       });
       // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
       config.optimization.runtimeChunk("single");
+      config.optimization.minimizer('terser').tap((args) => {
+        args[0].terserOptions.compress.drop_console = true;
+        return args;
+      })
     });
+
+    // 注入cdn变量 (打包时会执行)
+  config.plugin('html').tap(args => {
+    args[0].cdn = cdn // 配置cdn给插件
+    return args
+  })
+    
+    
   },
+  
 };
