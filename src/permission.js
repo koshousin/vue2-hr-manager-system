@@ -1,4 +1,4 @@
-import router, {dynamicRoutes} from '@/router'
+import router, {dynamicRoutes ,resetRouter} from '@/router'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import getTitle from '@/utils/get-page-title'
@@ -18,7 +18,7 @@ router.beforeEach(async (to,from,next) => {
       next("/");
       NProgress.done();
     } else {
-      // 防止多次跳转
+      // 动态渲染权限菜单
       if (!store.state.user.userInfo.userId) {
         const roles = await store.dispatch("user/getProfile");
         // 根据用户权限筛选出应有的页面
@@ -30,7 +30,7 @@ router.beforeEach(async (to,from,next) => {
 
         //console.log('过滤后的数组：',filteredRoutes);
 
-        // 添加 404 界面
+        // 添加 404 界面,一定要最后添加进去
         filteredRoutes.push({ path: "*", redirect: "/404", hidden: true });
   
         //console.log(filteredRoutes);
@@ -40,7 +40,7 @@ router.beforeEach(async (to,from,next) => {
         router.addRoutes(filteredRoutes);
         store.commit('menuList/SET_MENU_LIST', filteredRoutes);
         // 解决白屏bug
-        next({
+        next({ 
           ...to,    // 保证路由添加完再进入
           replace:true
         })

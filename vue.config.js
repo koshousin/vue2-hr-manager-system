@@ -111,6 +111,7 @@ module.exports = {
       })
       .end();
 
+    // 生产环境下的优化
     config.when(process.env.NODE_ENV !== "development", (config) => {
       config
         .plugin("ScriptExtHtmlWebpackPlugin")

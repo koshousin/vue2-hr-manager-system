@@ -49,7 +49,6 @@ export default {
       commit("REMOVE_USER_PROFILE");
       // commit('menuList/SET_MENU_LIST',[]);
       //重置路由
-      this.commit("menuList/RESET_MENU_LIST", []);
       resetRouter();
     }
   }
